@@ -173,12 +173,12 @@ class Program
     {
         for (int i = 0; i < GRID_SIZE; i++)
         {
-            if (CheckLine(grid, 0))
+            if (CheckLine(grid, i))
             {
                 return grid[i, 0];
             }
 
-            if (CheckColumn(grid, 0))
+            if (CheckColumn(grid, i))
             {
                 return grid[0, i];
             }
@@ -189,12 +189,43 @@ class Program
             return grid[0, 0];
         }
 
-        if (CheckMainDiagonal(grid))
+        if (CheckCounterDiagonal(grid))
         {
-            return grid[GRID_SIZE - 1, GRID_SIZE - 1];
+            return grid[GRID_SIZE - 1, 0];
         }
 
         return "";
+    }
+
+    
+    static string FindBestMove(string[,] grid, string mark)
+    {
+        string[,] testGrid = (string[,])grid.Clone();
+        string storedValue = "";
+        for (int i = 0; i < GRID_SIZE; i++)
+        {
+            for (int j = 0; j < GRID_SIZE; j++)
+            {
+                if (testGrid[i, j] != USER_MARK && testGrid[i, j] != COMPUTER_MARK)
+                {
+                    storedValue = testGrid[i, j];
+                    ReplaceValue(testGrid, mark, storedValue);
+
+                    if (GlobalCheck(testGrid) == mark)
+                    {
+                        return storedValue;
+                    }
+
+                    testGrid[i, j] = storedValue;
+                }
+            }
+        }
+
+        if (mark == USER_MARK)
+        {
+            return storedValue;
+        }
+        return WRONG_CHOICE;
     }
 
     static void Main(string[] args)
@@ -208,8 +239,6 @@ class Program
         int turn = 0;
         do
         {
-          
-
             if (turn % 2 == 0)
             {
                 //User turn
@@ -226,6 +255,18 @@ class Program
             else
             {
                 // Computer turn
+                
+                string computerChoice = FindBestMove(grid, COMPUTER_MARK); //Value that makes the computer win
+                
+                if ( computerChoice!= WRONG_CHOICE)
+                {
+                    ReplaceValue(grid, COMPUTER_MARK, computerChoice);
+                }
+                else
+                {
+                    ReplaceValue(grid, COMPUTER_MARK,FindBestMove(grid, USER_MARK));//Value that can block the user
+                }
+                
             }
 
             switch (GlobalCheck(grid))
@@ -243,11 +284,18 @@ class Program
                     isGameOn = false;
                     break;
             }
+
             if (isGameOn)
             {
                 Console.Clear();
             }
             turn++;
+            if (turn == GRID_SIZE * GRID_SIZE)
+            {
+                DisplayGrid(grid);
+                Console.WriteLine("Draw Game");
+                isGameOn = false;
+            }
         } while (isGameOn);
     }
 }
