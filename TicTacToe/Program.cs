@@ -20,25 +20,21 @@ class Program
         }
     }
 
-    static void DisplayGrid(string[,] grid)
+    static void GetFinalGrid(string[,] grid, int turn)
     {
+        int countReplacement = 0;
+        int i = 1;
+        do
         {
-            for (int i = 0; i < GRID_SIZE; i++)
+            if (ReplaceValue(grid, " ", i.ToString()))
             {
-                for (int j = 0; j < GRID_SIZE; j++)
-                {
-                    Console.Write($"{grid[i, j]} ");
-                    if (j == GRID_SIZE - 1)
-                    {
-                        Console.Write("\n");
-                    }
-                }
+                countReplacement++;
             }
-        }
-        Console.WriteLine($"\nYour symbol is : {USER_MARK}\nComputer symbol is : {COMPUTER_MARK}\n");
+            i++;
+        } while (i <= GRID_SIZE * GRID_SIZE && countReplacement < (GRID_SIZE*GRID_SIZE - turn));
     }
 
-    static bool CheckUserChoice(string[,] grid, string userInput)
+    public static bool CheckUserChoice(string[,] grid, string userInput)
     {
         for (int i = 0; i < GRID_SIZE; i++)
         {
@@ -55,22 +51,9 @@ class Program
     }
 
 
-    static string GetUserChoice(string[,] grid)
-    {
-        Console.WriteLine("Please enter the number of the position on which you want to play : ");
-        string userInput = Console.ReadLine();
+   
 
-        if (!CheckUserChoice(grid, userInput))
-        {
-            Console.Clear();
-            Console.WriteLine($"\n{userInput} is not an authorized value. ");
-            return WRONG_CHOICE;
-        }
-
-        return userInput;
-    }
-
-    static void ReplaceValue(string[,] grid, string mark, string choice)
+    static bool ReplaceValue(string[,] grid, string mark, string choice)
     {
         bool isReplaced = false;
         for (int i = 0; i < GRID_SIZE; i++)
@@ -81,15 +64,12 @@ class Program
                 {
                     grid[i, j] = mark;
                     isReplaced = true;
-                    break;
+                    return isReplaced;
                 }
             }
-
-            if (isReplaced)
-            {
-                break;
-            }
         }
+
+        return isReplaced;
     }
 
 
@@ -194,7 +174,7 @@ class Program
             return grid[GRID_SIZE - 1, 0];
         }
 
-        return "";
+        return WRONG_CHOICE;
     }
 
     
@@ -230,8 +210,8 @@ class Program
 
     static void Main(string[] args)
     {
-        Console.WriteLine("\nWelcome to Tic Tac Toe!\n");
-
+        UIMethods.DisplayWelcomeMessage("Welcome to Tic Tac Toe!");
+       
         string[,] grid = new string[GRID_SIZE, GRID_SIZE];
         GridCreation(grid);
 
@@ -242,9 +222,9 @@ class Program
             if (turn % 2 == 0)
             {
                 //User turn
-                DisplayGrid(grid);
+                UIMethods.DisplayGrid(grid, GRID_SIZE, USER_MARK,COMPUTER_MARK);
 
-                string userChoice = GetUserChoice(grid);
+                string userChoice = UIMethods.GetUserChoice(grid, WRONG_CHOICE);
                 if (userChoice == WRONG_CHOICE)
                 {
                     continue;
@@ -269,33 +249,38 @@ class Program
                 
             }
 
-            switch (GlobalCheck(grid))
+            turn++;
+            
+           
+           string globalCheckResult = GlobalCheck(grid);
+
+           if (globalCheckResult != WRONG_CHOICE && turn <GRID_SIZE*GRID_SIZE)
+           {
+              GetFinalGrid(grid, turn);
+           }
+           
+            if ( globalCheckResult!= WRONG_CHOICE || turn == GRID_SIZE * GRID_SIZE)
             {
-                case USER_MARK:
-                    Console.Clear();
-                    DisplayGrid(grid);
-                    Console.WriteLine("\nCongratulations, You Won!");
-                    isGameOn = false;
-                    break;
-                case COMPUTER_MARK:
-                    Console.Clear();
-                    DisplayGrid(grid);
-                    Console.WriteLine("\nGAME OVER. Try Again.");
-                    isGameOn = false;
-                    break;
+                isGameOn = false;
+                if (globalCheckResult == USER_MARK)
+                {
+                    UIMethods.EndGameMessage(grid, "Congratulations, You Won!", GRID_SIZE,COMPUTER_MARK,USER_MARK);
+                } 
+                if (globalCheckResult == COMPUTER_MARK)
+                {
+                    UIMethods.EndGameMessage(grid, "GAME OVER. Try Again.", GRID_SIZE,COMPUTER_MARK,USER_MARK);
+                }
+                if (turn == GRID_SIZE * GRID_SIZE)
+                {
+                    UIMethods.EndGameMessage(grid, "Draw Game", GRID_SIZE,COMPUTER_MARK,USER_MARK);
+                }
             }
 
             if (isGameOn)
             {
-                Console.Clear();
+                UIMethods.ClearUI();
             }
-            turn++;
-            if (turn == GRID_SIZE * GRID_SIZE)
-            {
-                DisplayGrid(grid);
-                Console.WriteLine("Draw Game");
-                isGameOn = false;
-            }
+            
         } while (isGameOn);
     }
 }
