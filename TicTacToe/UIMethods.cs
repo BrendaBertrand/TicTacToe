@@ -44,7 +44,7 @@ public class UIMethods
         string userMark)
     {
         Console.Clear();
-        UIMethods.DisplayGrid(grid, gridSize, userMark,computerMark);
+        DisplayGrid(grid, gridSize, userMark,computerMark);
         Console.WriteLine($"\n{message}");
     }
 
