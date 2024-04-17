@@ -46,31 +46,14 @@ class Program
             }
 
             turn++;
-            
-           
-           string globalCheckResult = LogicMethods.GlobalCheck(grid);
+            string gameResult = LogicMethods.GlobalCheck(grid);
+            isGameOn = LogicMethods.IsGameOn(grid, turn, gameResult);
 
-           if (globalCheckResult != Constants.WRONG_CHOICE && turn <Constants.GRID_SIZE*Constants.GRID_SIZE)
-           {
-              LogicMethods.GetFinalGrid(grid, turn);
-           }
-           
-            if ( globalCheckResult!= Constants.WRONG_CHOICE || turn == Constants.GRID_SIZE * Constants.GRID_SIZE)
+            if (!isGameOn)
             {
-                isGameOn = false;
-                if (globalCheckResult == Constants.USER_MARK)
-                {
-                    UIMethods.EndGameMessage(grid, "Congratulations, You Won!");
-                } 
-                if (globalCheckResult == Constants.COMPUTER_MARK)
-                {
-                    UIMethods.EndGameMessage(grid, "GAME OVER. Try Again.");
-                }
-                if (turn == Constants.GRID_SIZE * Constants.GRID_SIZE)
-                {
-                    UIMethods.EndGameMessage(grid, "Draw Game");
-                }
+                UIMethods.EndOfGame(grid, turn, gameResult);
             }
+            
 
             if (isGameOn)
             {

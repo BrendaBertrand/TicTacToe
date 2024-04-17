@@ -43,13 +43,33 @@ public class UIMethods
 
     public static void EndGameMessage(string[,] grid, string message)
     {
-        Console.Clear();
-        DisplayGrid(grid);
-        Console.WriteLine($"\n{message}");
+        
+        
     }
 
     public static void ClearUI()
     {
         Console.Clear();
+    }
+
+    public static void EndOfGame(string [,] grid, int turn, string result )
+    {
+        LogicMethods.GetFinalGrid(grid, turn);
+        Console.Clear();
+        DisplayGrid(grid);
+        
+        if (result == Constants.USER_MARK)
+        {
+            Console.WriteLine("Congratulations, You Won!");
+        } 
+        if (result == Constants.COMPUTER_MARK)
+        {
+            Console.WriteLine("GAME OVER. Try Again.");
+        }
+        if (turn == Constants.GRID_SIZE * Constants.GRID_SIZE)
+        {
+            Console.WriteLine("Draw Game");
+        }
+        
     }
 }

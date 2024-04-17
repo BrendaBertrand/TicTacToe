@@ -19,7 +19,9 @@ public class LogicMethods
     {
         int countReplacement = 0;
         int i = 1;
-        do
+        while (i <= Constants.GRID_SIZE * Constants.GRID_SIZE &&
+               countReplacement < (Constants.GRID_SIZE * Constants.GRID_SIZE - turn))
+
         {
             if (ReplaceValue(grid, " ", i.ToString()))
             {
@@ -27,8 +29,7 @@ public class LogicMethods
             }
 
             i++;
-        } while (i <= Constants.GRID_SIZE * Constants.GRID_SIZE &&
-                 countReplacement < (Constants.GRID_SIZE * Constants.GRID_SIZE - turn));
+        }
     }
 
     public static bool CheckUserChoice(string[,] grid, string userInput)
@@ -202,5 +203,15 @@ public class LogicMethods
         }
 
         return Constants.WRONG_CHOICE;
+    }
+
+    public static bool IsGameOn(string[,] grid, int turn, string result)
+    {
+        if (result != Constants.WRONG_CHOICE || turn == Constants.GRID_SIZE * Constants.GRID_SIZE)
+        {
+            return false;
+        }
+
+        return true;
     }
 }
