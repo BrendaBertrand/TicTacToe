@@ -41,11 +41,6 @@ public class UIMethods
         return userInput;
     }
 
-    public static void EndGameMessage(string[,] grid, string message)
-    {
-        
-        
-    }
 
     public static void ClearUI()
     {
@@ -62,14 +57,28 @@ public class UIMethods
         {
             Console.WriteLine("Congratulations, You Won!");
         } 
-        if (result == Constants.COMPUTER_MARK)
+        else if (result == Constants.COMPUTER_MARK)
         {
             Console.WriteLine("GAME OVER. Try Again.");
         }
-        if (turn == Constants.GRID_SIZE * Constants.GRID_SIZE)
+        else if (turn == Constants.GRID_SIZE * Constants.GRID_SIZE)
         {
             Console.WriteLine("Draw Game");
         }
         
+    }
+    
+    public static void UserTurn(string[,] grid)
+    {
+        string userChoice = Constants.WRONG_CHOICE;
+        do
+        {
+            DisplayGrid(grid);
+
+            userChoice = GetUserChoice(grid);
+            
+        } while (userChoice == Constants.WRONG_CHOICE);
+        
+        LogicMethods.ReplaceValue(grid, Constants.USER_MARK, userChoice);
     }
 }

@@ -214,4 +214,20 @@ public class LogicMethods
 
         return true;
     }
+
+    public static void ComputerTurn(string[,] grid)
+    {
+        string computerChoice = LogicMethods.FindBestMove(grid, Constants.COMPUTER_MARK); //Value that makes the computer win
+                
+        if ( computerChoice!= Constants.WRONG_CHOICE)
+        {
+            ReplaceValue(grid, Constants.COMPUTER_MARK, computerChoice);
+        }
+        else
+        {
+            ReplaceValue(grid, Constants.COMPUTER_MARK,LogicMethods.FindBestMove(grid, Constants.USER_MARK));//Value that can block the user
+        }
+    }
+
+
 }
